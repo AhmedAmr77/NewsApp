@@ -16,8 +16,11 @@
 		B65BBE6F280032D000270C0C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65BBE6E280032D000270C0C /* Constants.swift */; };
 		B65BBE742800332200270C0C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65BBE722800332200270C0C /* CategoryTableViewCell.swift */; };
 		B65BBE752800332200270C0C /* CategoryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B65BBE732800332200270C0C /* CategoryTableViewCell.xib */; };
+		B65BBE7E2800585900270C0C /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65BBE7D2800585900270C0C /* Category.swift */; };
+		B65BBE8128005D8A00270C0C /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65BBE8028005D8A00270C0C /* OnboardingViewModel.swift */; };
+		B65BBE8528005E5800270C0C /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65BBE8428005E5800270C0C /* Protocols.swift */; };
 		B667B3CD280005A800140606 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B667B3CB280005A800140606 /* OnboardingViewController.swift */; };
-		B667B3CE280005A800140606 /* OnboradingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B667B3CC280005A800140606 /* OnboradingViewController.xib */; };
+		B667B3CE280005A800140606 /* OnboardingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B667B3CC280005A800140606 /* OnboardingViewController.xib */; };
 		B667B3FB2800188300140606 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B667B3FA2800188300140606 /* BaseViewController.swift */; };
 		B667B40E28002B0600140606 /* PickerTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B667B40D28002B0600140606 /* PickerTextField.swift */; };
 /* End PBXBuildFile section */
@@ -35,8 +38,11 @@
 		B65BBE6E280032D000270C0C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B65BBE722800332200270C0C /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
 		B65BBE732800332200270C0C /* CategoryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CategoryTableViewCell.xib; sourceTree = "<group>"; };
+		B65BBE7D2800585900270C0C /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
+		B65BBE8028005D8A00270C0C /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
+		B65BBE8428005E5800270C0C /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		B667B3CB280005A800140606 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
-		B667B3CC280005A800140606 /* OnboradingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OnboradingViewController.xib; sourceTree = "<group>"; };
+		B667B3CC280005A800140606 /* OnboardingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OnboardingViewController.xib; sourceTree = "<group>"; };
 		B667B3FA2800188300140606 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		B667B40D28002B0600140606 /* PickerTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerTextField.swift; sourceTree = "<group>"; };
 		F0CE804CD9B49CFC4F2CA8C3 /* Pods-NewsApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewsApp.debug.xcconfig"; path = "Target Support Files/Pods-NewsApp/Pods-NewsApp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -118,6 +124,7 @@
 		B667B3C727FFFF4400140606 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				B65BBE8028005D8A00270C0C /* OnboardingViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -127,7 +134,7 @@
 			children = (
 				B65BBE712800330900270C0C /* Cell */,
 				B667B3CB280005A800140606 /* OnboardingViewController.swift */,
-				B667B3CC280005A800140606 /* OnboradingViewController.xib */,
+				B667B3CC280005A800140606 /* OnboardingViewController.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -135,6 +142,7 @@
 		B667B3C927FFFF5A00140606 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B65BBE7D2800585900270C0C /* Category.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -143,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				B667B3FA2800188300140606 /* BaseViewController.swift */,
+				B65BBE8428005E5800270C0C /* Protocols.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -233,7 +242,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B64BF4FF27FFFD1F00327AE6 /* LaunchScreen.storyboard in Resources */,
-				B667B3CE280005A800140606 /* OnboradingViewController.xib in Resources */,
+				B667B3CE280005A800140606 /* OnboardingViewController.xib in Resources */,
 				B64BF4FC27FFFD1F00327AE6 /* Assets.xcassets in Resources */,
 				B65BBE752800332200270C0C /* CategoryTableViewCell.xib in Resources */,
 			);
@@ -291,8 +300,11 @@
 				B667B3FB2800188300140606 /* BaseViewController.swift in Sources */,
 				B64BF4F027FFFD1E00327AE6 /* AppDelegate.swift in Sources */,
 				B64BF4FA27FFFD1E00327AE6 /* NewsApp.xcdatamodeld in Sources */,
+				B65BBE8528005E5800270C0C /* Protocols.swift in Sources */,
 				B64BF4F227FFFD1E00327AE6 /* SceneDelegate.swift in Sources */,
 				B65BBE6F280032D000270C0C /* Constants.swift in Sources */,
+				B65BBE8128005D8A00270C0C /* OnboardingViewModel.swift in Sources */,
+				B65BBE7E2800585900270C0C /* Category.swift in Sources */,
 				B667B3CD280005A800140606 /* OnboardingViewController.swift in Sources */,
 				B667B40E28002B0600140606 /* PickerTextField.swift in Sources */,
 				B65BBE742800332200270C0C /* CategoryTableViewCell.swift in Sources */,
