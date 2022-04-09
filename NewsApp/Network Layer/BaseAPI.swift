@@ -25,21 +25,8 @@ class BaseAPI<T:TargetType> {
             }
             if statusCode == 200 {
                 //successful request
-                guard let jsonResponse = try? response.result.get() else {
-                    //add custom Error
-                    let error = NSError(domain: target.baseURL, code: 0, userInfo: [NSLocalizedDescriptionKey: Constants.genericError])
-                    print("at jsonResponse")
-                    completion(.failure(error))
-                    return
-                }
-                guard let theJsonData = try? JSONSerialization.data(withJSONObject: jsonResponse, options: []) else {
-                    //add custom Error
-                    let error = NSError(domain: target.baseURL, code: 0, userInfo: [NSLocalizedDescriptionKey: Constants.genericError])
-                    print("at jsonData error")
-                    completion(.failure(error))
-                    return
-                }
-                guard let responseObject = try? JSONDecoder().decode(M.self, from: theJsonData) else {
+                guard let jsonData = response.data,
+                      let responseObject = try? JSONDecoder().decode(M.self, from: jsonData) else {
                     //add custom Error
                     let error = NSError(domain: target.baseURL, code: 0, userInfo: [NSLocalizedDescriptionKey: Constants.genericError])
                     print("at responseObject, error on parsing")
@@ -50,7 +37,7 @@ class BaseAPI<T:TargetType> {
                 completion(.success(responseObject))
             } else {
                 //add error depending on statusCode
-                let message = "Error Message Parsed From Server"
+                let message = Constants.serverError
                 let error = NSError(domain: target.baseURL, code: statusCode, userInfo: [NSLocalizedDescriptionKey: message])
                 print(error)
                 completion(.failure(error))
@@ -62,7 +49,8 @@ class BaseAPI<T:TargetType> {
         switch task {
         case .requestPlain:
             return ([:],URLEncoding.default)
-        case .requestParameters(parameters: let parameters, encoding: let encoding):
+        case .requestParameters(parameters: var parameters, encoding: let encoding):
+            parameters[Constants.apiKeyKey] = Constants.apiKey
             return (parameters,encoding)
         }
     }

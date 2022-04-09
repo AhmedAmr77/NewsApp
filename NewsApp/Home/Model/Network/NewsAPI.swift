@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 
 protocol NewsAPIContract {
-    func getNews(page:String,limit:String,completion: @escaping (Result<NewsResponse?,NSError>) -> Void)
+    func getNews(country: String, category:String, page:String, limit:String, completion: @escaping (Result<NewsResponse?,NSError>) -> Void)
     func cancelAllRequests()
 }
 
@@ -20,8 +20,18 @@ class NewsAPI : BaseAPI<ApplicationNetworking>, NewsAPIContract {
     
     private override init() {}
 
-    func getNews(page: String, limit: String, completion: @escaping (Result<NewsResponse?, NSError>) -> Void) {
-        self.fetchData(target: .getNews(page: page, limit: limit), responseClass: NewsResponse.self) { (result) in
+    func getNews(country: String, category: String, page: String, limit: String, completion: @escaping (Result<NewsResponse?, NSError>) -> Void) {
+        self.fetchData(
+            target: .getNews(country: country, category: category, page: page, limit: limit),
+            responseClass: NewsResponse.self) { (result) in
+            completion(result)
+        }
+    }
+    
+    func searchNews(with keyword: String, page: String, limit: String, completion: @escaping (Result<NewsResponse?, NSError>) -> Void) {
+        self.fetchData(
+            target: .searchNews(keyword: keyword, page: page, limit: limit),
+            responseClass: NewsResponse.self) { (result) in
             completion(result)
         }
     }

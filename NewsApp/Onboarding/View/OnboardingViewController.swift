@@ -21,6 +21,23 @@ class OnboardingViewController: BaseViewController, UITableViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        NewsAPI.sharedInstance.getNews(country: "eg", category: "sports", page: "1", limit: "7") { (result) in
+            switch result {
+            case.failure(let err):
+                print("EERRORR1 =>", err)
+            case.success(let response):
+                print("SSUCCESS1", response)
+            }
+        }
+        NewsAPI.sharedInstance.searchNews(with: "salah", page: "1", limit: "7") { (result) in
+            switch result {
+            case.failure(let err):
+                print("EERRORR2 =>", err)
+            case.success(let response):
+                print("SSUCCESS2", response)
+            }
+        }
+        
         viewInit()
         
         //register cell nib file

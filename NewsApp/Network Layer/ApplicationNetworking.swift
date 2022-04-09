@@ -9,7 +9,8 @@ import Foundation
 import Alamofire
 
 enum ApplicationNetworking{
-    case getNews(page:String, limit:String)
+    case getNews(country:String, category:String, page:String, limit:String)
+    case searchNews(keyword:String, page:String, limit:String)
 }
 
 extension ApplicationNetworking : TargetType{
@@ -23,7 +24,9 @@ extension ApplicationNetworking : TargetType{
     var path: String {
         switch self{
         case .getNews:
-            return Constants.urlPath
+            return Constants.headlinesUrlPath
+        case .searchNews:
+            return Constants.headlinesUrlPath
         }
     }
     
@@ -36,14 +39,20 @@ extension ApplicationNetworking : TargetType{
     
     var task: Task {
         switch self{
-        case .getNews(let page, let limit):
-            return .requestParameters(parameters: ["page":page,"limit":limit], encoding: URLEncoding.default)
+        case .getNews(let country, let category, let page, let limit):
+            return .requestParameters(
+                parameters: [Constants.countryKey:country, Constants.categoryKey:category, Constants.pageKey:page, Constants.pageSizeKey:limit],
+                encoding: URLEncoding.default)
+        case .searchNews(let keyword, let page, let limit):
+            return .requestParameters(
+                parameters: [Constants.searchyKey:keyword,Constants.pageKey:page,Constants.pageSizeKey:limit],
+                encoding: URLEncoding.default)
         }
     }
     var headers: [String : String]? {
         switch self{
         default:
-            return ["Accept": "application/json","Content-Type": "application/json", "apiKey": Constants.apiKey]
+            return ["Accept": "application/json","Content-Type": "application/json"]
         }
     }
 }
