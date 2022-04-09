@@ -39,4 +39,8 @@ class LocalUserDefaults{
     func setCategories(_ categories: [String]) {
         userDefaults.set(categories, forKey: Constants.categoryLocalKey)
     }
+    
+    func getCategories() -> [String]? {
+        userDefaults.stringArray(forKey: Constants.categoryLocalKey)
+    }
 }

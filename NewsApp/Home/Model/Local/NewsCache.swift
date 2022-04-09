@@ -61,7 +61,7 @@ class NewsCache{
         } catch {
             print("Catch  GET")
         }
-        print("Cached News", articles)
+        print("Cached News", articles.count)
         completion(articles)
     }
     
@@ -71,10 +71,10 @@ class NewsCache{
             let newsMngObj = try managedContext.fetch(fetchReq)
             for item in newsMngObj {
                 managedContext.delete(item)
-                try managedContext.save()
             }
         } catch {
             print("Catch  DLT")
         }
+        print("DATA DELETED")
     }
 }

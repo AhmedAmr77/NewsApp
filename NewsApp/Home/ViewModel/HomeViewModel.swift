@@ -40,7 +40,6 @@ class HomeViewModel: HomeViewModelProtocol {
     private let userDefaults: LocalUserDefaults!
     private let newsCache: NewsCache!
     private let newsAPI: NewsAPIContract!
-    private let defaults = UserDefaults.standard
     private let disposeBag = DisposeBag()
 
     init() {
@@ -72,13 +71,14 @@ class HomeViewModel: HomeViewModelProtocol {
     }
     
     private func getUserSelections() {
-        country = defaults.string(forKey: Constants.countryLocalKey) ?? ""
-        categories = defaults.stringArray(forKey: Constants.categoryLocalKey) ?? []
+        country = userDefaults.getCountry() ?? ""
+        categories = userDefaults.getCategories() ?? []
     }
     
     func getData() {
         guard country != nil,
               categories != nil else { print("HomeVM getData failed"); return}
+        var isOldLocalDeleted = false
         loadingsubject.onNext(true)
         if userDefaults.isLastNewsRequestPassed() {
             categories!.forEach { (category) in
@@ -91,7 +91,10 @@ class HomeViewModel: HomeViewModelProtocol {
                         self.userDefaults.setLastNewsRequest()
                         self.articles = fetchedAtricle
                         self.newsSubject.onNext(fetchedAtricle)
-                        self.newsCache.deleteAll()
+                        if !isOldLocalDeleted {
+                            self.newsCache.deleteAll()
+                            isOldLocalDeleted = true
+                        }
                         self.saveArticlesToLocal(fetchedAtricle)
                     case .failure(let error):
                         self.errorsubject.onNext(error.localizedDescription)
