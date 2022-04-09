@@ -19,8 +19,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
-        let navigationController = UINavigationController(rootViewController: OnboardingViewController())
+        let navigationController = UINavigationController(rootViewController: HomeViewController())
 //        navigationController.navigationBar.isTranslucent = false
+        if UserDefaults.standard.string(forKey: Constants.countryLocalKey) == nil {
+            let vc = OnboardingViewController()
+            navigationController.addChild(vc)
+        }
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
     }

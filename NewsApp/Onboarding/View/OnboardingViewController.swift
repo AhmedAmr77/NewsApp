@@ -22,24 +22,11 @@ class OnboardingViewController: BaseViewController, UITableViewDelegate {
         super.viewDidLoad()
         
         viewInit()
-        
-        //register cell nib file
         registerCell()
         
-        //initialization
-        viewModel = OnboardingViewModel()
-        disposeBag = DisposeBag()
+        instantiateRXItems()
+        listenOnObservables()
         
-        //setting delegate
-        categoriesTableView.rx.setDelegate(self).disposed(by: disposeBag)
-        
-        //bindingData from viewModel
-        binding()
-        
-        //listen while getting data
-        subscribing()
-        
-        //get categories
         viewModel.getData()
     }
     
@@ -77,7 +64,13 @@ extension OnboardingViewController {
         categoriesTableView.register(categoryCell, forCellReuseIdentifier: Constants.categoryCell)
     }
     
-    private func binding() {
+    private func instantiateRXItems() {
+        viewModel = OnboardingViewModel()
+        disposeBag = DisposeBag()
+        categoriesTableView.rx.setDelegate(self).disposed(by: disposeBag)
+    }
+    
+    private func listenOnObservables() {
         viewModel.categoriesObservable.bind(to: categoriesTableView.rx.items(cellIdentifier: Constants.categoryCell)) {row, item, cell in
             let castedCell = cell as! CategoryTableViewCell
             castedCell.config(with: item)
@@ -90,9 +83,7 @@ extension OnboardingViewController {
             self.viewModel.updateCategory(at: index)
          }
         }.disposed(by: disposeBag)
-    }
-    
-    private func subscribing() {
+   
         viewModel.countriesObservable.subscribe(onNext: {[weak self] (countries) in
             guard let self = self else { return }
             self.countryPickerTextField.dataList = countries
@@ -119,7 +110,7 @@ extension OnboardingViewController {
         
         viewModel.dismissObservable.subscribe(onNext: {[weak self] in
             guard let self = self else { return }
-            self.dismiss(animated: true, completion: nil)
+            self.navigationController?.popViewController(animated: true)
         }).disposed(by: disposeBag)
     }
 }

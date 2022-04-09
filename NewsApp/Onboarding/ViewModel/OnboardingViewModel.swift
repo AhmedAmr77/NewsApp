@@ -63,7 +63,7 @@ class OnboardingViewModel: OnboardingViewModelProtocol {
     }
     
     func didSelectCountry(at index: Int) {
-        selectedCountry = countries?[index]
+        selectedCountry = countriesModel?.getCode(for: countries?[index] ?? "")?.lowercased()
     }
     
     func updateCategory(at index: Int) {
@@ -81,8 +81,8 @@ class OnboardingViewModel: OnboardingViewModelProtocol {
             errorSubject.onNext(Constants.selectCategoryMessage)
         } else {
             // save country and categories
-            defaults.set(selectedCountry, forKey: "Country")
-            defaults.set(getSelectedCategories(), forKey: "Categories")
+            defaults.set(selectedCountry, forKey: Constants.countryLocalKey)
+            defaults.set(getSelectedCategories(), forKey: Constants.categoryLocalKey)
              
             dismissSubject.onNext(())
         }

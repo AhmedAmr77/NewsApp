@@ -11,4 +11,10 @@ target 'NewsApp' do
   pod 'RxSwift', '6.5.0'
   pod 'RxCocoa', '6.5.0'
 
+  # Alamofire
+  pod 'Alamofire', '~> 5.5'
+  
+  # SDWebImage
+  pod 'SDWebImage', '~> 5.0'
+
 end
