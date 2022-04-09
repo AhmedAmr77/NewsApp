@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         let navigationController = UINavigationController(rootViewController: HomeViewController())
 //        navigationController.navigationBar.isTranslucent = false
-        if UserDefaults.standard.string(forKey: Constants.countryLocalKey) == nil {
+        if  LocalUserDefaults.sharedInstance.getCountry() == nil {
             let vc = OnboardingViewController()
             navigationController.addChild(vc)
         }

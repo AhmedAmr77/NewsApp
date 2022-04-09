@@ -24,6 +24,17 @@ struct Constants {
     //MARK:- Local
     static let countryLocalKey = "Country"
     static let categoryLocalKey = "Category"
+    static let localDomain = "LocalDomain"
+    static let noNewsError = "No News Found"
+    static let entityName = "NewsArticle"
+    static let articleSourceNameKey = "sourceName"
+    static let articleAuthorKey = "author"
+    static let articleTitleKey = "title"
+    static let articleDescriptionKey = "artDescription"
+    static let articleImageUrlKey = "imageUrl"
+    static let articleUrlKey = "url"
+    
+    static let lastRequestKey = "LastRequest"
     
     //MARK:- Networking
     static let baseURL = "https://newsapi.org/"
