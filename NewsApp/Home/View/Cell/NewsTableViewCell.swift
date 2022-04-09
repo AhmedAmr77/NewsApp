@@ -19,6 +19,7 @@ class NewsTableViewCell: UITableViewCell {
         // Initialization code
         containerView.layer.borderWidth = 1.0
         containerView.layer.cornerRadius = 10
+        selectionStyle = .none
     }
     
     func config(with article: Article) {

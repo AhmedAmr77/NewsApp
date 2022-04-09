@@ -13,6 +13,8 @@ class HomeViewController: BaseViewController {
 
     @IBOutlet weak private var newsTableView: UITableView!
     
+    private var searchBar: UISearchBar!
+    
     private var disposeBag:DisposeBag!
     private var viewModel: HomeViewModelProtocol!
     
@@ -20,6 +22,7 @@ class HomeViewController: BaseViewController {
         super.viewDidLoad()
         
         setupNavigationBar()
+        initializeSearchBar()
         registerCell()
         
         instantiateRXItems()
@@ -38,6 +41,12 @@ extension HomeViewController {
     private func setupNavigationBar() {
         self.navigationItem.setHidesBackButton(true, animated: true)
         self.title = Constants.newsTitle
+    }
+    
+    private func initializeSearchBar() {
+        searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 20))
+        let rightNavBarButton = UIBarButtonItem(customView:searchBar)
+        navigationItem.rightBarButtonItem = rightNavBarButton
     }
     
     private func registerCell() {
@@ -78,6 +87,8 @@ extension HomeViewController {
             guard let self = self else {return}
             print("Navigate to Details")
         }).disposed(by: disposeBag)
+        
+        searchBar.rx.text.orEmpty.distinctUntilChanged().bind(to: viewModel.searchValue).disposed(by: disposeBag)
     }
 }
 
