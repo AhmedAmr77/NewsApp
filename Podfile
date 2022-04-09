@@ -14,4 +14,7 @@ target 'NewsApp' do
   # Alamofire
   pod 'Alamofire', '~> 5.5'
   
+  # SDWebImage
+  pod 'SDWebImage', '~> 5.0'
+
 end
