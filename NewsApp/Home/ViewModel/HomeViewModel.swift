@@ -36,12 +36,16 @@ class HomeViewModel: HomeViewModelProtocol {
 
     private var articles: [Article] = []
     private var searchedData: [Article]!
-
+    
+    private let userDefaults: LocalUserDefaults!
+    private let newsCache: NewsCache!
     private let newsAPI: NewsAPIContract!
     private let defaults = UserDefaults.standard
     private let disposeBag = DisposeBag()
 
     init() {
+        userDefaults = LocalUserDefaults.sharedInstance
+        newsCache = NewsCache.sharedInstance
         newsAPI = NewsAPI.sharedInstance
 
         errorObservable = errorsubject.asObservable()
@@ -76,18 +80,37 @@ class HomeViewModel: HomeViewModelProtocol {
         guard country != nil,
               categories != nil else { print("HomeVM getData failed"); return}
         loadingsubject.onNext(true)
-        categories!.forEach { (category) in
-            newsAPI.getNews(country: country!, category: category, page: page, limit: limit) { [weak self] (result) in
-                guard let self = self else { print("HomeVM getNews failed"); return }
-                self.loadingsubject.onNext(false)
-                switch result{
-                case .success(let response):
-                    self.articles = response?.articles ?? []
-                    self.newsSubject.onNext(response?.articles ?? [])
-                case .failure(let error):
-                    self.errorsubject.onNext(error.localizedDescription)
+        if userDefaults.isLastNewsRequestPassed() {
+            categories!.forEach { (category) in
+                newsAPI.getNews(country: country!, category: category, page: page, limit: limit) { [weak self] (result) in
+                    guard let self = self else { print("HomeVM getNews failed"); return }
+                    self.loadingsubject.onNext(false)
+                    switch result{
+                    case .success(let response):
+                        let fetchedAtricle = response?.articles ?? []
+                        self.userDefaults.setLastNewsRequest()
+                        self.articles = fetchedAtricle
+                        self.newsSubject.onNext(fetchedAtricle)
+                        self.newsCache.deleteAll()
+                        self.saveArticlesToLocal(fetchedAtricle)
+                    case .failure(let error):
+                        self.errorsubject.onNext(error.localizedDescription)
+                    }
                 }
             }
+        } else {
+            self.loadingsubject.onNext(false)
+            newsCache.getNews { [weak self] (articles) in
+                guard let self = self else { print("HomeVM getCachedNews failed"); return }
+                self.articles = articles
+                self.newsSubject.onNext(articles)
+            }
+        }
+    }
+    
+    private func saveArticlesToLocal(_ atricles: [Article]) {
+        articles.forEach { (article) in
+            newsCache.save(article: article)
         }
     }
 }

@@ -38,9 +38,11 @@ class OnboardingViewModel: OnboardingViewModelProtocol {
     private var countries: [String]?
     private var categories: [Category]?
     
-    private let defaults = UserDefaults.standard
+    private let defaults: LocalUserDefaults!
         
     init() {
+        defaults = LocalUserDefaults.sharedInstance
+        
         countriesObservable = countriesSubject.asObservable()
         categoriesObservable = categoriesSubject.asObservable()
         errorObservable = errorSubject.asObservable()
@@ -81,8 +83,8 @@ class OnboardingViewModel: OnboardingViewModelProtocol {
             errorSubject.onNext(Constants.selectCategoryMessage)
         } else {
             // save country and categories
-            defaults.set(selectedCountry, forKey: Constants.countryLocalKey)
-            defaults.set(getSelectedCategories(), forKey: Constants.categoryLocalKey)
+            defaults.setCountry(selectedCountry)
+            defaults.setCategories(getSelectedCategories())
              
             dismissSubject.onNext(())
         }
