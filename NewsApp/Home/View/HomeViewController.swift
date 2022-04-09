@@ -85,7 +85,9 @@ extension HomeViewController {
         
         newsTableView.rx.modelSelected(Article.self).subscribe(onNext: {[weak self] (newsItem) in
             guard let self = self else {return}
-            print("Navigate to Details")
+            let vc = NewsDetailsViewController()
+            vc.article = newsItem
+            self.navigationController?.pushViewController(vc, animated: true)
         }).disposed(by: disposeBag)
         
         searchBar.rx.text.orEmpty.distinctUntilChanged().bind(to: viewModel.searchValue).disposed(by: disposeBag)

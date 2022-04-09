@@ -36,6 +36,8 @@
 		B6FEF83928018FAC00626DDC /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FEF83828018FAC00626DDC /* HomeViewModel.swift */; };
 		B6FEF8432801A76900626DDC /* NewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FEF8412801A76900626DDC /* NewsTableViewCell.swift */; };
 		B6FEF8442801A76900626DDC /* NewsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6FEF8422801A76900626DDC /* NewsTableViewCell.xib */; };
+		B6FEF8872801D63100626DDC /* NewsDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FEF8852801D63100626DDC /* NewsDetailsViewController.swift */; };
+		B6FEF8882801D63100626DDC /* NewsDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6FEF8862801D63100626DDC /* NewsDetailsViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,6 +73,8 @@
 		B6FEF83828018FAC00626DDC /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		B6FEF8412801A76900626DDC /* NewsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTableViewCell.swift; sourceTree = "<group>"; };
 		B6FEF8422801A76900626DDC /* NewsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewsTableViewCell.xib; sourceTree = "<group>"; };
+		B6FEF8852801D63100626DDC /* NewsDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsDetailsViewController.swift; sourceTree = "<group>"; };
+		B6FEF8862801D63100626DDC /* NewsDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewsDetailsViewController.xib; sourceTree = "<group>"; };
 		F0CE804CD9B49CFC4F2CA8C3 /* Pods-NewsApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewsApp.debug.xcconfig"; path = "Target Support Files/Pods-NewsApp/Pods-NewsApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -111,6 +115,7 @@
 				B667B3F92800185700140606 /* Base */,
 				B667B3C627FFFF3000140606 /* Onboarding */,
 				B6FEF7DC28014E4C00626DDC /* Home */,
+				B6FEF8812801D5F600626DDC /* News Details */,
 				B667B40C28002AE500140606 /* Utilites */,
 				B64BF50A27FFFD4600327AE6 /* Supporting Files */,
 				B64BF4F827FFFD1E00327AE6 /* NewsApp.xcdatamodeld */,
@@ -276,6 +281,39 @@
 			path = Cell;
 			sourceTree = "<group>";
 		};
+		B6FEF8812801D5F600626DDC /* News Details */ = {
+			isa = PBXGroup;
+			children = (
+				B6FEF8842801D60C00626DDC /* Model */,
+				B6FEF8832801D60900626DDC /* View */,
+				B6FEF8822801D60300626DDC /* ViewModel */,
+			);
+			path = "News Details";
+			sourceTree = "<group>";
+		};
+		B6FEF8822801D60300626DDC /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		B6FEF8832801D60900626DDC /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B6FEF8852801D63100626DDC /* NewsDetailsViewController.swift */,
+				B6FEF8862801D63100626DDC /* NewsDetailsViewController.xib */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		B6FEF8842801D60C00626DDC /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		CFAF82B49B495F22E406CD6A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -352,6 +390,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6FEF8882801D63100626DDC /* NewsDetailsViewController.xib in Resources */,
 				B64BF4FF27FFFD1F00327AE6 /* LaunchScreen.storyboard in Resources */,
 				B667B3CE280005A800140606 /* OnboardingViewController.xib in Resources */,
 				B6FEF83528018A7F00626DDC /* HomeViewController.xib in Resources */,
@@ -419,6 +458,7 @@
 				B6FEF7EC28014F6600626DDC /* TargetType.swift in Sources */,
 				B6FEF82928015A9000626DDC /* NewsResponse.swift in Sources */,
 				B65BBE8528005E5800270C0C /* Protocols.swift in Sources */,
+				B6FEF8872801D63100626DDC /* NewsDetailsViewController.swift in Sources */,
 				B6FEF7D428012EF100626DDC /* Country.swift in Sources */,
 				B64BF4F227FFFD1E00327AE6 /* SceneDelegate.swift in Sources */,
 				B65BBE6F280032D000270C0C /* Constants.swift in Sources */,
