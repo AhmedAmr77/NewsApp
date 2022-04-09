@@ -11,4 +11,9 @@ struct Constants {
 
     static let categoryCell = "CategoryTableViewCell"
     
+    
+    static let selectCountryMessage = "Please select your country!"
+    static let selectCategoryMessage = "Please select at least one category!"
+    static let somethingWrong = "Something wrong happened please try again later"
+
 }

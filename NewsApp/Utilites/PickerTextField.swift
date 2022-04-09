@@ -45,7 +45,7 @@ class PickerTextField: UITextField {
     }
     
     private func setToolBar() {
-        let toolBar = UIToolbar(frame: CGRect(x: 0.0, y: 0.0, width: frame.width, height: 35.0))
+        let toolBar = UIToolbar(frame: CGRect(x: 0.0, y: 0.0, width: frame.width, height: 37.0))
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let done = UIBarButtonItem(title: "Done", style: .done, target: nil, action: #selector(donePressed))
         toolBar.setItems([flexibleSpace, done], animated: false)
@@ -56,7 +56,9 @@ class PickerTextField: UITextField {
     }
     
     private func selectFisrtItem() {
-        pickerView(picker, didSelectRow: 0, inComponent: 0)
+        if (text?.isEmpty ?? true) {
+            pickerView(picker, didSelectRow: 0, inComponent: 0)
+        }
     }
 }
 

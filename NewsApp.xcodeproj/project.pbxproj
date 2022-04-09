@@ -23,6 +23,7 @@
 		B667B3CE280005A800140606 /* OnboardingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B667B3CC280005A800140606 /* OnboardingViewController.xib */; };
 		B667B3FB2800188300140606 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B667B3FA2800188300140606 /* BaseViewController.swift */; };
 		B667B40E28002B0600140606 /* PickerTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B667B40D28002B0600140606 /* PickerTextField.swift */; };
+		B6FEF7D428012EF100626DDC /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FEF7D328012EF100626DDC /* Country.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +46,7 @@
 		B667B3CC280005A800140606 /* OnboardingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OnboardingViewController.xib; sourceTree = "<group>"; };
 		B667B3FA2800188300140606 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		B667B40D28002B0600140606 /* PickerTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerTextField.swift; sourceTree = "<group>"; };
+		B6FEF7D328012EF100626DDC /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
 		F0CE804CD9B49CFC4F2CA8C3 /* Pods-NewsApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewsApp.debug.xcconfig"; path = "Target Support Files/Pods-NewsApp/Pods-NewsApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -143,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				B65BBE7D2800585900270C0C /* Category.swift */,
+				B6FEF7D328012EF100626DDC /* Country.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -301,6 +304,7 @@
 				B64BF4F027FFFD1E00327AE6 /* AppDelegate.swift in Sources */,
 				B64BF4FA27FFFD1E00327AE6 /* NewsApp.xcdatamodeld in Sources */,
 				B65BBE8528005E5800270C0C /* Protocols.swift in Sources */,
+				B6FEF7D428012EF100626DDC /* Country.swift in Sources */,
 				B64BF4F227FFFD1E00327AE6 /* SceneDelegate.swift in Sources */,
 				B65BBE6F280032D000270C0C /* Constants.swift in Sources */,
 				B65BBE8128005D8A00270C0C /* OnboardingViewModel.swift in Sources */,

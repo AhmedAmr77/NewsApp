@@ -34,12 +34,11 @@ class OnboardingViewModel: OnboardingViewModelProtocol {
     
     private var selectedCountry: String?
     
-    private var countries = ["EUA", "Egypt", "KSA", "Aus", "UK", "USA", "GER", "Russ", "Mex", "io", "op"]
-    private var categories = [Category(name: "Bis", isSelected: false),
-                              Category(name: "Spo", isSelected: false),
-                              Category(name: "Sci", isSelected: false),
-                              Category(name: "Tec", isSelected: false),
-                              Category(name: "hea", isSelected: false)]
+    private var countriesModel: Countries?
+    private var countries: [String]?
+    private var categories: [Category]?
+    
+    private let defaults = UserDefaults.standard
         
     init() {
         countriesObservable = countriesSubject.asObservable()
@@ -47,34 +46,43 @@ class OnboardingViewModel: OnboardingViewModelProtocol {
         errorObservable = errorSubject.asObservable()
         loadingObservable = loadingSubject.asObservable()
         dismissObservable = dismissSubject.asObservable()
+        
+        countriesModel = Countries()
+        countries = countriesModel?.getCountriesNames()
+        
+        categories = Categories().categories
     }
     
     func getData() {
+        guard categories != nil,
+              countries != nil else { errorSubject.onNext(Constants.somethingWrong); return }
         loadingSubject.onNext(true)
-        countriesSubject.onNext(countries)
-        categoriesSubject.onNext(categories)
+        countriesSubject.onNext(countries!)
+        categoriesSubject.onNext(categories!)
         loadingSubject.onNext(false)
     }
     
     func didSelectCountry(at index: Int) {
-        selectedCountry = countries[index]
+        selectedCountry = countries?[index]
     }
     
     func updateCategory(at index: Int) {
+        guard categories != nil else { errorSubject.onNext(Constants.somethingWrong); return }
         loadingSubject.onNext(true)
-        categories[index].isSelected = !categories[index].isSelected
-        categoriesSubject.onNext(categories)
+        categories![index].isSelected = !categories![index].isSelected
+        categoriesSubject.onNext(categories!)
         loadingSubject.onNext(false)
     }
     
     func donePressed() {
         if !checkCountryIsSelected() {
-            errorSubject.onNext("Please select your country!")
+            errorSubject.onNext(Constants.selectCountryMessage)
         } else if !checkCategoryIsSelected() {
-            errorSubject.onNext("Please select at least one category!")
+            errorSubject.onNext(Constants.selectCategoryMessage)
         } else {
-            
             // save country and categories
+            defaults.set(selectedCountry, forKey: "Country")
+            defaults.set(getSelectedCategories(), forKey: "Categories")
              
             dismissSubject.onNext(())
         }
@@ -85,11 +93,23 @@ class OnboardingViewModel: OnboardingViewModelProtocol {
     }
     
     private func checkCategoryIsSelected() -> Bool {
-        for category in categories {
+        guard categories != nil else { return false }
+        for category in categories! {
             if category.isSelected {
                 return true
             }
         }
         return false
+    }
+    
+    private func getSelectedCategories() -> [String] {
+        guard categories != nil else { return [] }
+        var selectedCategries = [String]()
+        for category in categories! {
+            if category.isSelected {
+                selectedCategries.append(category.name)
+            }
+        }
+        return selectedCategries
     }
 }
