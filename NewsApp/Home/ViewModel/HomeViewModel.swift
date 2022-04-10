@@ -10,7 +10,6 @@ import RxSwift
 import RxCocoa
 
 protocol HomeViewModelProtocol: BaseViewModelProtocol {
-    var newsObservable: Observable<[Article]> { get }
     var errorObservable: Observable<(String)> { get }
     var loadingObservable: Observable<Bool> { get }
     var searchValue: BehaviorRelay<String> { get }
@@ -18,10 +17,10 @@ protocol HomeViewModelProtocol: BaseViewModelProtocol {
     var fetchMoreDatas: PublishSubject<Void> { get }
     var refreshControlCompelted: PublishSubject<Void> { get }
     var isLoadingSpinnerAvaliable: PublishSubject<Bool> { get }
+    var items: BehaviorRelay<[Article]> { get }
 }
 
 class HomeViewModel: HomeViewModelProtocol {
-    var newsObservable: Observable<[Article]>
     var errorObservable: Observable<(String)>
     var loadingObservable: Observable<Bool>
     var searchValue: BehaviorRelay<String> = BehaviorRelay(value: "")
@@ -34,7 +33,6 @@ class HomeViewModel: HomeViewModelProtocol {
     
     private var errorsubject = PublishSubject<String>()
     private var loadingsubject = PublishSubject<Bool>()
-    private var newsSubject = PublishSubject<[Article]>()
     private lazy var searchValueObservable: Observable<String> = searchValue.asObservable()
 
     private var maxValue: Int?
@@ -62,7 +60,6 @@ class HomeViewModel: HomeViewModelProtocol {
         
         errorObservable = errorsubject.asObservable()
         loadingObservable = loadingsubject.asObservable()
-        newsObservable = newsSubject.asObservable()
 
         searchedData = articles
 
@@ -80,7 +77,7 @@ class HomeViewModel: HomeViewModelProtocol {
             if (value.isEmpty) {
                 self.searchedData = self.articles
             }
-            self.newsSubject.onNext(self.searchedData ?? [])
+            self.items.accept(self.searchedData ?? [])
         }).disposed(by: disposeBag)
         
         fetchMoreDatas.subscribe { [weak self] _ in
@@ -98,15 +95,14 @@ class HomeViewModel: HomeViewModelProtocol {
     
     private func refreshControlTriggered() {
         newsAPI.cancelAllRequests()
-//        isPaginationRequestStillResume = false
+        isPaginationRequestStillResume = false
         pageCounter = 1
-//        items.accept([])
+        items.accept([])
         fetchData(page: pageCounter,
                        isRefreshControl: true)
     }
     
     private func fetchData(page: Int, isRefreshControl: Bool) {
-        self.loadingsubject.onNext(true)
         if isPaginationRequestStillResume || isRefreshRequstStillResume { return }
         self.isRefreshRequstStillResume = isRefreshControl
         
@@ -121,34 +117,26 @@ class HomeViewModel: HomeViewModelProtocol {
         if pageCounter  == 1 || isRefreshControl {
             isLoadingSpinnerAvaliable.onNext(false)
         }
-        
+        self.loadingsubject.onNext(true)
         newsAPI.getNews(country: country!, category: categories![0], page: String(pageCounter), limit: String(limit)) { [weak self] (result) in
-            guard let self = self else{
-                print("HVM getNews failed")
-                return
-            }
+            guard let self = self else { print("HVM getNews failed"); return }
             switch result{
             case .success(let response):
                 self.maxValue = (Int((response?.totalResults ?? 0) / self.limit) + 1)
-                print("\t\t\t\t\t\t\t", response?.totalResults)
-                self.loadingsubject.onNext(false)
-                if let articles = response?.articles,
-                   !articles.isEmpty {
-                    self.handleData(data: articles)
-                }
+                    self.handleData(data: response?.articles)
+                    self.userDefaults.setLastNewsRequest()
             case .failure(let error):
                 self.newsCache.getNews(completion: { (articlesArray) in
                     if articlesArray.isEmpty {
                         self.items.accept(articlesArray)
-                        self.newsSubject.onNext(articlesArray)
                         self.errorsubject.onNext(error.localizedDescription)
                         return
                     } else {
-                        self.loadingsubject.onNext(false)
                         self.errorsubject.onNext(error.localizedDescription)
                     }
                 })
             }
+            self.loadingsubject.onNext(false)
             self.isLoadingSpinnerAvaliable.onNext(false)
             self.isPaginationRequestStillResume = false
             self.isRefreshRequstStillResume = false
@@ -156,18 +144,19 @@ class HomeViewModel: HomeViewModelProtocol {
         }
     }
     
-    private func handleData(data: [Article]) {
+    private func handleData(data: [Article]?) {
         print("in handle data")
-        newsCache.deleteAll()
-        var newData = data
-        if pageCounter != 1 {
+        if pageCounter == 1, let newD = data, !newD.isEmpty {
+            newsCache.deleteAll()
             print("HD pc !=1")
+            items.accept(newD)
+        } else if let newD = data, !newD.isEmpty {
             let oldDatas = items.value
-            newData = oldDatas + newData
+            items.accept(oldDatas + newD)
         }
-        saveArticlesToLocal(articles)
-        self.items.accept(newData)
-        self.newsSubject.onNext(newData)
+        saveArticlesToLocal(data ?? [])
+
+        self.articles = items.value
         pageCounter += 1
     }
 
@@ -175,6 +164,21 @@ class HomeViewModel: HomeViewModelProtocol {
         country = userDefaults.getCountry() ?? ""
         categories = userDefaults.getCategories() ?? []
     }
+    
+//    private func checkLastRequestTime() -> Bool {
+//        if userDefaults.isLastNewsRequestPassed() {
+//            return true
+//        }
+//        if articles.isEmpty {
+//            newsCache.getNews { [weak self] (articles) in
+//                guard let self = self else { print("HomeVM getCachedNews failed"); return }
+//                self.loadingsubject.onNext(false)
+//                self.articles = articles
+//                self.newsSubject.onNext(articles)
+//            }
+//        }
+//        return false
+//    }
     
 //    func getData() {
 //        guard country != nil,
@@ -212,8 +216,8 @@ class HomeViewModel: HomeViewModelProtocol {
 //        }
 //    }
     
-    private func saveArticlesToLocal(_ atricles: [Article]) {
-        articles.forEach { (article) in
+    private func saveArticlesToLocal(_ newAtricles: [Article]) {
+        newAtricles.forEach { (article) in
             newsCache.save(article: article)
         }
     }

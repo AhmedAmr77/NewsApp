@@ -84,10 +84,10 @@ extension HomeViewController {
             }
         }).disposed(by: disposeBag)
         
-        viewModel.newsObservable.bind(to: newsTableView.rx.items) { tableView, row, item in
-            let cell = tableView.dequeueReusableCell(withIdentifier: Constants.newsCell, for: IndexPath(row: row, section: 0)) as! NewsTableViewCell
-            cell.config(with: item)
-            return cell
+        viewModel.items.bind(to: newsTableView.rx.items) { (tableView, row, item) in
+            let cell = tableView.dequeueReusableCell(withIdentifier: Constants.newsCell, for: IndexPath(row: row, section: 0)) as? NewsTableViewCell
+            cell?.config(with: item)
+            return cell ?? UITableViewCell()
         }
         .disposed(by: disposeBag)
         
