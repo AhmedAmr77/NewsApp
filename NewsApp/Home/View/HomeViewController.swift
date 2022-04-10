@@ -105,7 +105,8 @@ extension HomeViewController {
             let offSetY = self.newsTableView.contentOffset.y
             let contentHeight = self.newsTableView.contentSize.height
             
-            if offSetY > (contentHeight - self.newsTableView.frame.size.height - 100) {
+            if offSetY > (contentHeight - self.newsTableView.frame.size.height - 100),
+               (offSetY != 0) {
                 self.viewModel.fetchMoreDatas.onNext(())
             }
         }.disposed(by: disposeBag)

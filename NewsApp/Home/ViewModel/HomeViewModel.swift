@@ -37,7 +37,7 @@ class HomeViewModel: HomeViewModelProtocol {
 
     private var maxValue: Int?
     private var pageCounter = 1
-    private var limit = 15
+    private var limit = 10
     private var isPaginationRequestStillResume = false
     private var isRefreshRequstStillResume = false
     
@@ -117,31 +117,27 @@ class HomeViewModel: HomeViewModelProtocol {
         if pageCounter  == 1 || isRefreshControl {
             isLoadingSpinnerAvaliable.onNext(false)
         }
-        self.loadingsubject.onNext(true)
-        newsAPI.getNews(country: country!, category: categories![0], page: String(pageCounter), limit: String(limit)) { [weak self] (result) in
-            guard let self = self else { print("HVM getNews failed"); return }
-            switch result{
-            case .success(let response):
-                self.maxValue = (Int((response?.totalResults ?? 0) / self.limit) + 1)
+        
+        if userDefaults.isLastNewsRequestPassed() || (pageCounter != 1) {
+            self.loadingsubject.onNext(true)
+            newsAPI.getNews(country: country!, category: categories![0], page: String(pageCounter), limit: String(limit)) { [weak self] (result) in
+                guard let self = self else { print("HVM getNews failed"); return }
+                switch result{
+                case .success(let response):
+                    self.maxValue = (Int((response?.totalResults ?? 0) / self.limit) + 1)
                     self.handleData(data: response?.articles)
-                    self.userDefaults.setLastNewsRequest()
-            case .failure(let error):
-                self.newsCache.getNews(completion: { (articlesArray) in
-                    if articlesArray.isEmpty {
-                        self.items.accept(articlesArray)
-                        self.errorsubject.onNext(error.localizedDescription)
-                        return
-                    } else {
-                        self.errorsubject.onNext(error.localizedDescription)
-                    }
-                })
+                case .failure(_):
+                    self.getCachedNews()
+                }
             }
-            self.loadingsubject.onNext(false)
-            self.isLoadingSpinnerAvaliable.onNext(false)
-            self.isPaginationRequestStillResume = false
-            self.isRefreshRequstStillResume = false
-            self.refreshControlCompelted.onNext(())
+        } else {
+            getCachedNews()
         }
+        self.loadingsubject.onNext(false)
+        self.isLoadingSpinnerAvaliable.onNext(false)
+        self.isPaginationRequestStillResume = false
+        self.isRefreshRequstStillResume = false
+        self.refreshControlCompelted.onNext(())
     }
     
     private func handleData(data: [Article]?) {
@@ -155,6 +151,7 @@ class HomeViewModel: HomeViewModelProtocol {
             items.accept(oldDatas + newD)
         }
         saveArticlesToLocal(data ?? [])
+        userDefaults.setLastNewsRequest()
 
         self.articles = items.value
         pageCounter += 1
@@ -165,56 +162,17 @@ class HomeViewModel: HomeViewModelProtocol {
         categories = userDefaults.getCategories() ?? []
     }
     
-//    private func checkLastRequestTime() -> Bool {
-//        if userDefaults.isLastNewsRequestPassed() {
-//            return true
-//        }
-//        if articles.isEmpty {
-//            newsCache.getNews { [weak self] (articles) in
-//                guard let self = self else { print("HomeVM getCachedNews failed"); return }
-//                self.loadingsubject.onNext(false)
-//                self.articles = articles
-//                self.newsSubject.onNext(articles)
-//            }
-//        }
-//        return false
-//    }
-    
-//    func getData() {
-//        guard country != nil,
-//              categories != nil else { print("HomeVM getData failed"); return}
-//        var isOldLocalDeleted = false
-//        loadingsubject.onNext(true)
-//        if userDefaults.isLastNewsRequestPassed() {
-//            categories!.forEach { (category) in
-//                newsAPI.getNews(country: country!, category: category, page: pageCounter, limit: limit) { [weak self] (result) in
-//                    guard let self = self else { print("HomeVM getNews failed"); return }
-//                    self.loadingsubject.onNext(false)
-//                    switch result{
-//                    case .success(let response):
-//                        let fetchedAtricle = response?.articles ?? []
-//                        self.userDefaults.setLastNewsRequest()
-//                        self.articles = fetchedAtricle
-//                        self.newsSubject.onNext(fetchedAtricle)
-//                        if !isOldLocalDeleted {
-//                            self.newsCache.deleteAll()
-//                            isOldLocalDeleted = true
-//                        }
-//                        self.saveArticlesToLocal(fetchedAtricle)
-//                    case .failure(let error):
-//                        self.errorsubject.onNext(error.localizedDescription)
-//                    }
-//                }
-//            }
-//        } else {
-//            self.loadingsubject.onNext(false)
-//            newsCache.getNews { [weak self] (articles) in
-//                guard let self = self else { print("HomeVM getCachedNews failed"); return }
-//                self.articles = articles
-//                self.newsSubject.onNext(articles)
-//            }
-//        }
-//    }
+    private func getCachedNews() {
+        newsCache.getNews(completion: { [weak self] (articlesArray) in
+            guard let self = self else { return }
+            if !articlesArray.isEmpty {
+                self.items.accept([])
+                self.items.accept(articlesArray)
+            } else {
+                self.errorsubject.onNext(Constants.noInternetConnection)
+            }
+        })
+    }
     
     private func saveArticlesToLocal(_ newAtricles: [Article]) {
         newAtricles.forEach { (article) in

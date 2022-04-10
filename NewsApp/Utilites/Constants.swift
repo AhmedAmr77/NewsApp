@@ -39,7 +39,7 @@ struct Constants {
     //MARK:- Networking
     static let baseURL = "https://newsapi.org/"
     static let headlinesUrlPath = "v2/top-headlines"
-    static let apiKey = "2a8b1ffdb9ba4d36a14e4cead2ca29f2"
+    static let apiKey = "08eb0b58efca40dfa270771885af0013"
     
     static let apiKeyKey = "apiKey"
     static let countryKey = "country"
