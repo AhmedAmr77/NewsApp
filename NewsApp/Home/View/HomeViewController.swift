@@ -15,6 +15,11 @@ class HomeViewController: BaseViewController {
     
     private var searchBar: UISearchBar!
     
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        return refreshControl
+    }()
+    
     private var disposeBag:DisposeBag!
     private var viewModel: HomeViewModelProtocol!
     
@@ -23,17 +28,12 @@ class HomeViewController: BaseViewController {
         
         setupNavigationBar()
         initializeSearchBar()
+        instantiateRefreshControl()
         registerCell()
         
         instantiateRXItems()
 
         listenOnObservables()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        viewModel.getData()
     }
 }
 
@@ -47,6 +47,14 @@ extension HomeViewController {
         searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 20))
         let rightNavBarButton = UIBarButtonItem(customView:searchBar)
         navigationItem.rightBarButtonItem = rightNavBarButton
+    }
+    
+    private func instantiateRefreshControl(){
+        newsTableView.refreshControl = refreshControl
+        refreshControl.addTarget(self, action: #selector(refreshControlTriggered), for: .valueChanged)
+    }
+    @objc private func refreshControlTriggered() {
+        viewModel.refreshControlAction.onNext(())
     }
     
     private func registerCell() {
@@ -76,10 +84,10 @@ extension HomeViewController {
             }
         }).disposed(by: disposeBag)
         
-        viewModel.newsObservable.bind(to: newsTableView.rx.items) { tableView, row, item in
-            let cell = tableView.dequeueReusableCell(withIdentifier: Constants.newsCell, for: IndexPath(row: row, section: 0)) as! NewsTableViewCell
-            cell.config(with: item)
-            return cell
+        viewModel.items.bind(to: newsTableView.rx.items) { (tableView, row, item) in
+            let cell = tableView.dequeueReusableCell(withIdentifier: Constants.newsCell, for: IndexPath(row: row, section: 0)) as? NewsTableViewCell
+            cell?.config(with: item)
+            return cell ?? UITableViewCell()
         }
         .disposed(by: disposeBag)
         
@@ -91,6 +99,34 @@ extension HomeViewController {
         }).disposed(by: disposeBag)
         
         searchBar.rx.text.orEmpty.distinctUntilChanged().bind(to: viewModel.searchValue).disposed(by: disposeBag)
+        
+        newsTableView.rx.didScroll.subscribe { [weak self] _ in
+            guard let self = self else { return }
+            let offSetY = self.newsTableView.contentOffset.y
+            let contentHeight = self.newsTableView.contentSize.height
+            
+            if offSetY > (contentHeight - self.newsTableView.frame.size.height - 100),
+               (offSetY != 0) {
+                self.viewModel.fetchMoreDatas.onNext(())
+            }
+        }.disposed(by: disposeBag)
+        
+        viewModel.isLoadingSpinnerAvaliable.subscribe { [weak self] isAvaliable in
+            guard let isAvaliable = isAvaliable.element,
+                let self = self else { return }
+            if(isAvaliable){
+                self.showLoading()
+            }else{
+                self.hideLoading()
+            }
+        }
+        .disposed(by: disposeBag)
+        
+        viewModel.refreshControlCompelted.subscribe { [weak self] _ in
+            guard let self = self else { return }
+            self.refreshControl.endRefreshing()
+        }
+        .disposed(by: disposeBag)
     }
 }
 
